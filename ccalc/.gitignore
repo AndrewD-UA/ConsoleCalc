@@ -1,0 +1,8 @@
+#Output files
+.out
+
+#VSCode files
+./vscode
+
+#Exclude binaries
+./bin
