@@ -4,7 +4,7 @@
 typedef struct{
     int maxData;    // The maximum number of items that can be stored in this Stack
     int currIndex;  // The current index of the backing array that is available for insertion
-    int data[10];   // The backing array of the stack
+    int *data;   // The backing array of the stack
 } stack;
 
 int pop(stack*);

@@ -3,15 +3,18 @@
 #include <limits.h>
 #include "Stack.h"
 
+#define DEFAULT_SIZE 10
+
 int hasNext(stack *s);
 
 /* Add a new item to the top of the stack
  * Return 0 for successful operation, INT_MIN for unsuccessful.
  */
 int push(stack* s, int val){
-    if (!(s->currIndex < s->maxData)){
-        printf("Cannot push another item: %d\n", val);
-        return -1;
+    if (s->currIndex >= s->maxData){
+        int *temp = realloc(s->data, (s->maxData * 2) * sizeof(int));
+        s->data = temp;
+        s->maxData << 1;
     }
 
     s->data[s->currIndex] = val;
@@ -27,6 +30,17 @@ int pop(stack* s){
     if (hasNext(s) == -1) return INT_MIN;
 
     s->currIndex--;
+
+    if (s->currIndex < s->maxData * 4){
+        s->data = realloc(s->data, (s->maxData / 2) * sizeof(int) );
+        // Cannot allocate more memory
+        if (s->data == NULL){
+            printf("Cannot reallocate Stack size");
+        }
+
+        s->maxData *= 2;
+    }
+
     return s->data[s->currIndex];
 }
 
@@ -63,12 +77,13 @@ void printStack(stack* s){
 }
 
 /*
- * Create a new Stack and return its reference.  All data inside is zeroed.
+ * Create a new Stack and return its reference.  All data inside is zeroed similar to a calloc.
  */ 
 stack* initStack(){
     stack* s = malloc(sizeof(stack));
     s->currIndex = 0;
-    s->maxData = 10;
+    s->maxData = DEFAULT_SIZE;
+    s->data = malloc(DEFAULT_SIZE * sizeof(int));
 
     for (int i = 0; i < s->maxData; i++){
         s->data[i] = 0;
